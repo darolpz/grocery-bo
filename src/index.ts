@@ -5,10 +5,8 @@ dotenv.config();
 
 async function start() {
   try {
-    const port: number = Number(process.env.PORT);
-
     const serv = await server();
-    serv.listen(port, (err, address) => {
+    serv.listen(process.env.PORT || 8080, '0.0.0.0', (err, address) => {
       if (err) {
         console.error(err);
         process.exit(1);

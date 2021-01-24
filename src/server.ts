@@ -48,6 +48,7 @@ async function _createConnection() {
   }
   await createConnection({
     type: 'postgres',
+    ssl: true,
     url: process.env.DATABASE_URL,
     database: 'grocery',
     entities: [User, Client, Order, Product, OrderToProduct],
