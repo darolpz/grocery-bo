@@ -7,7 +7,7 @@ import {
   JoinTable,
   OneToMany
 } from 'typeorm';
-import { OrderToProduct } from './orderToProduct';
+import { OrderToProduct } from './productToOrderModel';
 import { Product } from '../product/model';
 @Entity()
 export class Order extends BaseEntity {
