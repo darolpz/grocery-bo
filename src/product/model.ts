@@ -5,7 +5,7 @@ import {
   BaseEntity,
   OneToMany
 } from 'typeorm';
-import { OrderToProduct } from '../order/orderToProduct';
+import { OrderToProduct } from '../order/productToOrderModel';
 
 enum ProductTypes {
   Vegetable = 'vegetable',

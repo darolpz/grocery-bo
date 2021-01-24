@@ -1,0 +1,47 @@
+version: "3.8"
+services:
+
+  mysql-grocery:
+    image: mysql-grocery
+    container_name: mysql
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=grocery
+      - MYSQL_USER=daro
+      - MYSQL_PASSWORD=Biney12
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    networks:
+      - grocery
+
+  postgresql-grocery:
+    image: postgres-grocery
+    container_name: postgresql
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=daro
+      - POSTGRES_PASSWORD=Biney12
+    volumes:
+      - ./postgresql_data:/var/lib/postgresql/data
+    networks:
+      - grocery
+  
+  grocery:
+    container_name: grocery
+    build:
+      dockerfile: ${PWD}/Dockerfile
+      context: ${PWD}/
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgresql
+      - mysql
+    networks:
+      - grocery
+
+networks:
+  grocery:
+    driver: bridge
