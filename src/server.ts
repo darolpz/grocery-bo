@@ -1,4 +1,4 @@
-import fastify from 'fastify';
+import fastify, { FastifyReply } from 'fastify';
 import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 import { User } from './user/model';
@@ -6,6 +6,18 @@ import registerUserRoutes from './user/route';
 
 async function server() {
   const server = fastify();
+  server.register(require('fastify-jwt'), {
+    secret: process.env.SECRET
+  });
+
+  server.decorate('authenticate', async (request: any, reply: FastifyReply) => {
+    try {
+      await request.jwtVerify();
+    } catch (err) {
+      reply.send(err);
+    }
+  });
+
   await createConnection({
     name: 'default',
     type: 'mysql',
@@ -19,7 +31,7 @@ async function server() {
     logging: false
   });
 
-  server.get('/ping', async (request, reply) => {
+  server.get('/ping', {}, async (request, reply) => {
     reply.send('pong').code(200);
   });
 

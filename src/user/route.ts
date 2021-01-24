@@ -1,4 +1,5 @@
-import { FastifyInstance, FastifyReply, FastifyRequest, RouteShorthandOptions } from 'fastify';
+import { FastifyReply, FastifyRequest, RouteShorthandOptions } from 'fastify';
+import fastifyJWT from 'fastify-jwt';
 import { User } from './model';
 import UserService from './service';
 
@@ -45,11 +46,34 @@ const loginOptions: RouteShorthandOptions = {
   }
 };
 
+const updateOpts: RouteShorthandOptions = {
+  schema: {
+    body: {
+      type: 'object',
+      required: ['username', 'firstName', 'lastName', 'email'],
+      properties: {
+        username: {
+          type: 'string'
+        },
+        firstName: {
+          type: 'string'
+        },
+        lastName: {
+          type: 'string'
+        },
+        email: {
+          type: 'string'
+        }
+      }
+    }
+  }
+};
+
 const userService = new UserService;
-function registerUserRoutes(server: FastifyInstance) {
+function registerUserRoutes(server: any) {
   server.post('/register', registerOpts, register);
   server.post('/login', loginOptions, login);
-  server.put('/user/update', registerOpts, update);
+  server.put('/user/update', { preValidation: server.authenticate, ...updateOpts }, update);
 }
 
 async function register(request: FastifyRequest, reply: FastifyReply) {
@@ -67,7 +91,8 @@ async function login(request: FastifyRequest, reply: FastifyReply) {
   try {
     const body = <any>request.body;
     const user = await userService.login(body.username, body.password);
-    reply.code(200).type('application/json').send(user);
+    const token = await reply.jwtSign({ ...user });
+    reply.code(200).type('application/json').send(token);
   } catch (err) {
     let code = 400;
     if (err === userService.notAuthorizedError) {
@@ -80,13 +105,14 @@ async function login(request: FastifyRequest, reply: FastifyReply) {
   }
 }
 
-async function update(request: FastifyRequest, reply: FastifyReply) {
+async function update(request: any, reply: FastifyReply, server: any) {
   try {
     const body: User = <User>request.body;
-    const user = await userService.update(body);
+    const user = await userService.update(request.user.id, body);
     reply.code(200).type('application/json').send(user);
   } catch (err) {
     reply.code(400).type('application/json').send(err);
   }
+
 }
 export default registerUserRoutes;
