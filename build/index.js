@@ -61,8 +61,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var fastify_1 = __importDefault(require("fastify"));
 require("reflect-metadata");
 var typeorm_1 = require("typeorm");
-var user_1 = require("./entity/user");
+var model_1 = require("./user/model");
 var dotenv = __importStar(require("dotenv"));
+var route_1 = __importDefault(require("./user/route"));
 dotenv.config();
 var server = fastify_1.default();
 console.log(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_PASS);
@@ -73,18 +74,17 @@ typeorm_1.createConnection({
     username: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASS,
     database: 'grocery',
-    entities: [
-        user_1.User
-    ],
+    entities: [model_1.User],
     synchronize: true,
     logging: false
-}).then(function (connection) { return __awaiter(void 0, void 0, void 0, function () {
+})
+    .then(function (connection) { return __awaiter(void 0, void 0, void 0, function () {
     var user, users;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 console.log('Inserting a new user into the database...');
-                user = new user_1.User();
+                user = new model_1.User();
                 user.firstName = 'Timber';
                 user.lastName = 'Saw';
                 user.email = 'daropl12@gmail.com';
@@ -93,7 +93,7 @@ typeorm_1.createConnection({
                 _a.sent();
                 console.log('Saved a new user with id: ' + user.id);
                 console.log('Loading users from the database...');
-                return [4 /*yield*/, connection.manager.find(user_1.User)];
+                return [4 /*yield*/, connection.manager.find(model_1.User)];
             case 2:
                 users = _a.sent();
                 console.log('Loaded users: ', users);
@@ -101,12 +101,14 @@ typeorm_1.createConnection({
                 return [2 /*return*/];
         }
     });
-}); }).catch(function (error) { return console.log(error); });
+}); })
+    .catch(function (error) { return console.log(error); });
 server.get('/ping', function (request, reply) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        return [2 /*return*/, 'pong\n'];
+        return [2 /*return*/, 'pong2\n'];
     });
 }); });
+route_1.default(server);
 server.listen(8080, function (err, address) {
     if (err) {
         console.error(err);

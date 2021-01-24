@@ -1,9 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany } from 'typeorm';
-import { OrderToProduct } from './orderToProduct';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BaseEntity,
+  OneToMany
+} from 'typeorm';
+import { OrderToProduct } from '../order/orderToProduct';
 
 @Entity()
 export class Product extends BaseEntity {
-
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -22,9 +27,11 @@ export class Product extends BaseEntity {
   @Column()
   quantityPrice!: number;
 
-  @OneToMany(type => OrderToProduct, orderToProduct => orderToProduct.product)
+  @OneToMany(
+    (type) => OrderToProduct,
+    (orderToProduct) => orderToProduct.product
+  )
   public orderToProduct!: OrderToProduct[];
-
 }
 
 enum ProductTypes {

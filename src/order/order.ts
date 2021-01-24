@@ -1,9 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToMany, JoinTable, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BaseEntity,
+  ManyToMany,
+  JoinTable,
+  OneToMany
+} from 'typeorm';
 import { OrderToProduct } from './orderToProduct';
-import { Product } from './product';
+import { Product } from '../product/model';
 @Entity()
 export class Order extends BaseEntity {
-
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -16,11 +23,10 @@ export class Order extends BaseEntity {
   @Column()
   final_amount!: number;
 
-  @ManyToMany(type => Product)
+  @ManyToMany((type) => Product)
   @JoinTable()
   products!: Product[];
 
-  @OneToMany(type => OrderToProduct, orderToProduct => orderToProduct.order)
+  @OneToMany((type) => OrderToProduct, (orderToProduct) => orderToProduct.order)
   public orderToProduct!: OrderToProduct[];
-
 }
