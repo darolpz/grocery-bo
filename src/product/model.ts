@@ -5,7 +5,7 @@ import {
   BaseEntity,
   OneToMany
 } from 'typeorm';
-import { OrderToProduct } from '../order/productToOrderModel';
+import { OrderToProduct } from '../orderToProduct/model';
 
 enum ProductTypes {
   Vegetable = 'vegetable',
@@ -47,9 +47,6 @@ export class Product extends BaseEntity {
   @Column()
   quantityPrice!: number;
 
-  @OneToMany(
-    (type) => OrderToProduct,
-    (orderToProduct) => orderToProduct.product
-  )
-  public orderToProduct!: OrderToProduct[];
+  @OneToMany(() => OrderToProduct, orderToProduct => orderToProduct.product)
+  public orderToProducts!: OrderToProduct[];
 }

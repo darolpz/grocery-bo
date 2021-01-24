@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 import { Client } from './client/model';
 import { Order } from './order/model';
-import { OrderToProduct } from './order/productToOrderModel';
+import { OrderToProduct } from './orderToProduct/model';
 import { Product } from './product/model';
 import { User } from './user/model';
 import registerUserRoutes from './user/route';

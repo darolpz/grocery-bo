@@ -7,7 +7,7 @@ import {
   JoinTable,
   OneToMany
 } from 'typeorm';
-import { OrderToProduct } from './productToOrderModel';
+import { OrderToProduct } from '../orderToProduct/model';
 import { Product } from '../product/model';
 @Entity()
 export class Order extends BaseEntity {
@@ -23,10 +23,6 @@ export class Order extends BaseEntity {
   @Column()
   final_amount!: number;
 
-  @ManyToMany((type) => Product)
-  @JoinTable()
-  products!: Product[];
-
-  @OneToMany((type) => OrderToProduct, (orderToProduct) => orderToProduct.order)
-  public orderToProduct!: OrderToProduct[];
+  @OneToMany(() => OrderToProduct, orderToProduct => orderToProduct.order)
+  public orderToProducts!: OrderToProduct[];
 }

@@ -1,6 +1,6 @@
 import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Product } from '../product/model';
-import { Order } from './model';
+import { Order } from '../order/model';
 
 @Entity()
 export class OrderToProduct {
@@ -16,9 +16,9 @@ export class OrderToProduct {
   @Column()
   public product_quantity!: number;
 
-  @ManyToOne((type) => Order, (order) => order.orderToProduct)
+  @ManyToOne(() => Order, (order) => order.orderToProducts)
   public order!: Order;
 
-  @ManyToOne((type) => Product, (product) => product.orderToProduct)
+  @ManyToOne(() => Product, (product) => product.orderToProducts)
   public product!: Product;
 }
