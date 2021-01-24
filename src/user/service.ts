@@ -41,18 +41,19 @@ export default class UserService {
       if (!isEqual) {
         throw this.notAuthorizedError;
       }
-
       return user;
     } catch (err) {
       throw err;
     }
   }
 
-  async update(body: User): Promise<UpdateResult> {
+  async update(userID: number, body: User): Promise<UpdateResult> {
     try {
       const userRepository = getRepository(User);
-
-      const updateResult = await userRepository.update({ 'username': body.username }, body);
+      if (body.password) {
+        delete body.password;
+      }
+      const updateResult = await userRepository.update({ 'id': userID }, body);
       return updateResult;
 
     } catch (err) {
