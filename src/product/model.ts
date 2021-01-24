@@ -7,6 +7,18 @@ import {
 } from 'typeorm';
 import { OrderToProduct } from '../order/orderToProduct';
 
+enum ProductTypes {
+  Vegetable = 'vegetable',
+  Fruit = 'fruit',
+  Seasoning = 'seasoning',
+  Legume = 'legume'
+}
+
+enum UnitType {
+  Crate = 'crate',
+  Kilograms = 'kilograms',
+  Packets = 'packets'
+}
 @Entity()
 export class Product extends BaseEntity {
   @PrimaryGeneratedColumn()
@@ -18,10 +30,18 @@ export class Product extends BaseEntity {
   @Column()
   price!: number;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: ProductTypes,
+    default: ProductTypes.Vegetable
+  })
   type!: ProductTypes;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: UnitType,
+    default: UnitType.Kilograms
+  })
   unitType!: UnitType;
 
   @Column()
@@ -32,17 +52,4 @@ export class Product extends BaseEntity {
     (orderToProduct) => orderToProduct.product
   )
   public orderToProduct!: OrderToProduct[];
-}
-
-enum ProductTypes {
-  Fruit,
-  Vegetable,
-  Seasoning,
-  Legume
-}
-
-enum UnitType {
-  Crate,
-  Kilograms,
-  Packetrs
 }

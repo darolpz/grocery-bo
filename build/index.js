@@ -58,62 +58,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var fastify_1 = __importDefault(require("fastify"));
-require("reflect-metadata");
-var typeorm_1 = require("typeorm");
-var model_1 = require("./user/model");
 var dotenv = __importStar(require("dotenv"));
-var route_1 = __importDefault(require("./user/route"));
+var server_1 = __importDefault(require("./server"));
 dotenv.config();
-var server = fastify_1.default();
-console.log(process.env.MYSQL_HOST, process.env.MYSQL_USER, process.env.MYSQL_PASS);
-typeorm_1.createConnection({
-    type: 'mysql',
-    host: process.env.MYSQL_HOST,
-    port: 3306,
-    username: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASS,
-    database: 'grocery',
-    entities: [model_1.User],
-    synchronize: true,
-    logging: false
-})
-    .then(function (connection) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, users;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                console.log('Inserting a new user into the database...');
-                user = new model_1.User();
-                user.firstName = 'Timber';
-                user.lastName = 'Saw';
-                user.email = 'daropl12@gmail.com';
-                return [4 /*yield*/, connection.manager.save(user)];
-            case 1:
-                _a.sent();
-                console.log('Saved a new user with id: ' + user.id);
-                console.log('Loading users from the database...');
-                return [4 /*yield*/, connection.manager.find(model_1.User)];
-            case 2:
-                users = _a.sent();
-                console.log('Loaded users: ', users);
-                console.log('Here you can setup and run express/koa/any other framework.');
-                return [2 /*return*/];
-        }
+function start() {
+    return __awaiter(this, void 0, void 0, function () {
+        var port, serv, err_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    port = Number(process.env.PORT);
+                    return [4 /*yield*/, server_1.default()];
+                case 1:
+                    serv = _a.sent();
+                    serv.listen(port, function (err, address) {
+                        if (err) {
+                            console.error(err);
+                            process.exit(1);
+                        }
+                        console.log("Server listening at " + address);
+                    });
+                    return [3 /*break*/, 3];
+                case 2:
+                    err_1 = _a.sent();
+                    console.error(err_1);
+                    process.exit(1);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
     });
-}); })
-    .catch(function (error) { return console.log(error); });
-server.get('/ping', function (request, reply) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        return [2 /*return*/, 'pong2\n'];
-    });
-}); });
-route_1.default(server);
-server.listen(8080, function (err, address) {
-    if (err) {
-        console.error(err);
-        process.exit(1);
-    }
-    console.log("Server listening at " + address);
-});
+}
+start();
 //# sourceMappingURL=index.js.map
