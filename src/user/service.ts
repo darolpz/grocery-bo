@@ -47,7 +47,7 @@ export default class UserService {
     }
   }
 
-  async update(userID: number, body: User): Promise<UpdateResult> {
+  async update(userID: number, body: any): Promise<UpdateResult> {
     try {
       const userRepository = getRepository(User);
       if (body.password) {
