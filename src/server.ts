@@ -7,6 +7,7 @@ import { OrderToProduct } from './orderToProduct/model';
 import { Product } from './product/model';
 import { User } from './user/model';
 import registerUserRoutes from './user/route';
+import { isLocalEnvironment } from './util/environment';
 
 async function server() {
   const server = fastify();
@@ -22,17 +23,7 @@ async function server() {
     }
   });
 
-  await createConnection({
-    type: 'mysql',
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    username: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: 'grocery',
-    entities: [User, Client, Order, Product, OrderToProduct],
-    synchronize: true,
-    logging: false
-  });
+  _createConnection();
 
   server.get('/ping', {}, async (request, reply) => {
     reply.send('pong').code(200);
@@ -40,6 +31,29 @@ async function server() {
 
   registerUserRoutes(server);
   return server;
+}
+
+async function _createConnection() {
+
+  if (isLocalEnvironment()) {
+    await createConnection({
+      type: 'mysql',
+      url: process.env.DATABASE_URL_MYSQL,
+      database: 'grocery',
+      entities: [User, Client, Order, Product, OrderToProduct],
+      synchronize: true,
+      logging: false
+    });
+    return;
+  }
+  await createConnection({
+    type: 'postgres',
+    url: process.env.DATABASE_URL,
+    database: 'grocery',
+    entities: [User, Client, Order, Product, OrderToProduct],
+    synchronize: true,
+    logging: false
+  });
 }
 
 export default server;

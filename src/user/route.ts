@@ -1,73 +1,8 @@
-import { FastifyReply, FastifyRequest, RouteShorthandOptions } from 'fastify';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import fastifyJWT from 'fastify-jwt';
 import { User } from './model';
+import { loginOptions, registerOpts, updateOpts } from './schemas';
 import UserService from './service';
-
-const registerOpts: RouteShorthandOptions = {
-  schema: {
-    body: {
-      type: 'object',
-      required: ['username', 'firstName', 'lastName', 'password', 'email'],
-      properties: {
-        username: {
-          type: 'string'
-        },
-        firstName: {
-          type: 'string'
-        },
-        lastName: {
-          type: 'string'
-        },
-        password: {
-          type: 'string'
-        },
-        email: {
-          type: 'string'
-        }
-      }
-    }
-  }
-};
-
-const loginOptions: RouteShorthandOptions = {
-  schema: {
-    body: {
-      type: 'object',
-      required: ['username', 'password'],
-      properties: {
-        username: {
-          type: 'string'
-        },
-        password: {
-          type: 'string'
-        }
-      }
-    }
-  }
-};
-
-const updateOpts: RouteShorthandOptions = {
-  schema: {
-    body: {
-      type: 'object',
-      required: ['username', 'firstName', 'lastName', 'email'],
-      properties: {
-        username: {
-          type: 'string'
-        },
-        firstName: {
-          type: 'string'
-        },
-        lastName: {
-          type: 'string'
-        },
-        email: {
-          type: 'string'
-        }
-      }
-    }
-  }
-};
 
 const userService = new UserService;
 function registerUserRoutes(server: any) {
@@ -80,7 +15,6 @@ async function register(request: FastifyRequest, reply: FastifyReply) {
   try {
     const body: User = <User>request.body;
     const user = await userService.register(body);
-    console.log(user);
     reply.code(200).type('application/json').send(user);
   } catch (err) {
     reply.code(400).type('application/json').send(err);
